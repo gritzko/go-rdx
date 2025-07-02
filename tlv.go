@@ -80,7 +80,7 @@ func WriteTLV(data []byte, lit byte, value []byte) []byte {
 
 func WriteTLKV(data []byte, lit byte, key, value []byte) []byte {
 	ret := data
-	l := len(key) + len(value)
+	l := len(key) + len(value) + 1
 	if l > 0xff {
 		ret = append(ret, lit)
 		ret = binary.LittleEndian.AppendUint32(ret, uint32(l))
@@ -88,6 +88,7 @@ func WriteTLKV(data []byte, lit byte, key, value []byte) []byte {
 		ret = append(ret, lit|CaseBit)
 		ret = append(ret, byte(l))
 	}
+	ret = append(ret, byte(len(key)))
 	ret = append(ret, key...)
 	ret = append(ret, value...)
 	return ret
